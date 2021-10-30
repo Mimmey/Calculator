@@ -27,10 +27,10 @@ class App extends React.Component {
   }
 
   onKeyPress(event) {
-    let output = this.refOutput.current;
+    let item = {value: '=', type: 'operation', color: 'default'};
 
     if (event.key === 'Enter') {
-      new TapeEngine('=', output.value, output.className).tape();
+      this.onButtonClick(item);
     }
   }
 
@@ -58,8 +58,8 @@ class App extends React.Component {
         </div>
 
         <div ref={this.refButtons} className="calculator-buttons">
-          {buttonStorage.buttons.map((item, index) => <button
-          key={index} className={item.type + ' ' + item.color} onClick={() => {this.onButtonClick(item)}}
+          {buttonStorage.buttons.map((item) => <button
+          key={item.value} className={item.type + ' ' + item.color} onClick={() => {this.onButtonClick(item)}}
           >{item.value}</button>)}
         </div>
       </div>
