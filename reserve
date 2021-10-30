@@ -1,0 +1,71 @@
+import './App.css';
+import React from 'react';
+import buttonStorage from './buttonStorage';
+import TapeEngine from './businesslogic/TapeEngine';
+
+class App extends React.Component {
+
+  constructor() {
+    super();
+    this.state = {
+      disabled: false,
+      out: ''
+    }
+
+    this.refOutput = React.createRef();
+    this.refButtons = React.createRef();
+  }
+  
+  componentDidMount() {
+    const buttons = Array.from(this.refButtons.current.querySelectorAll('button'));
+    buttons.forEach(e => e.style.height = e.offsetWidth + 'px');
+  }
+
+  componentDidUpdate() {
+    const buttons = Array.from(this.refButtons.current.querySelectorAll('button'));
+    buttons.forEach(e => e.style.height = e.offsetWidth + 'px');
+  }
+
+  _onClick(item) {
+    let output = this.refOutput.current;
+    console.log("BEFORE CONSTRUCTOR:")
+    console.log("ITEM:" + item.type);
+    console.log("VALUE:" + output.value);
+    let tapeEngine = new TapeEngine(item, output.value, output.className);
+    
+    tapeEngine.tape();
+    output.value = tapeEngine.output.value;
+    console.log("TAPE ENGINE VALUE: " + tapeEngine.output.value);
+    output.classList.add(tapeEngine.output.classList);
+
+    this.setState ({
+      disabled: tapeEngine.disabled
+    });
+  }
+
+  onKeyPress(event) {
+    if (event.key === 'Enter') {
+      this.tapeOperation('=');
+    }
+  }
+
+  render() {
+    return (
+      <div className="calculator">
+        <div className="calculator-result">
+         <input ref={this.refOutput} disabled={this.state.disabled} onKeyPress={(e) => {this.onKeyPress(e)}} className="calculator-result-expression" 
+           id="input" placeholder='0' defaultValue={this.state.out}
+          ></input>
+        </div>
+
+        <div ref={this.refButtons} className="calculator-buttons">
+          {buttonStorage.buttons.map((item) => <button
+          key={item.value} tabIndex='0' className={item.type + ' ' + item.color} onClick={this._onClick(item)}
+          >{item.value}</button>)}
+        </div>
+      </div>
+    );
+  }
+}
+
+export default App;
