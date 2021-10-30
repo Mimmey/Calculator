@@ -58,6 +58,9 @@ class CalculationEngine {
         array[t2] = parseFloat(v1) * parseFloat(v2);
         break;
       case '/':
+        if (parseFloat(v2) === 0) {
+          return NaN;
+        }
         array[t2] = parseFloat(v1) / parseFloat(v2);
         break;
       case '+':
@@ -78,18 +81,29 @@ class CalculationEngine {
   
   calculate(string){
 
+    if (string.indexOf('(') >= 0 || string.indexOf(')') >= 0) {
+      return NaN;
+    }
+    
     // break the string into numbers and operators
     let cArray = (string.match(/([0-9]+\.[0-9]+)|([0-9]+)|\+|-|\^|\*|\//g));
     let i = -1;
-    cArray = this.mergeMinuses(cArray);
 
+    console.log(cArray);
+    
     if (!cArray) {
+      return string;
+    }
+
+    if (cArray.length === 0) {
       return string;
     }
 
     if (cArray.length === 1) {
       return cArray[0];
     }
+
+    cArray = this.mergeMinuses(cArray);
 
     // degree
     while (i++ < cArray.length - 1) {
@@ -133,16 +147,20 @@ class CalculationEngine {
     return cArray[0];
   }
   
-  calculateFull() {
-    let str = this.expression;
+  calculateFull(str) {
     // clean the string from spaces
     str = str.replace(/ /g,'');
   
     // declare the final result variable
     let result = str;
-  
+
+    //prevent 8(9) from being solved as 89
+    if (str.match(/[0-9]\(/gmi) !== null || str.match(/\)[0-9]/gmi)) {
+      return NaN;
+    }
+
     // brake the strings there are between parentheses
-    let subCalculations = str.match(/\(([^()]+)\)/gmi); 
+    let subCalculations = str.match(/\(([^()]+)\)/gmi);
     let subCalc;
   
     if (!subCalculations) {
@@ -150,14 +168,18 @@ class CalculationEngine {
     }
   
     for (let k = 0; k < subCalculations.length; k++) {
+      
       subCalc = subCalculations[k].replace(/\(|\)/g, '');
-      console.log('Replacing (' + subCalc + ') by ' + this.calculate(subCalc));
-      result = result.replace('('+subCalc+')', this.calculate(subCalc));
+      let calculated = this.calculate(subCalc);
+      console.log('Replacing (' + subCalc + ') by ' + calculated);
+      result = result.replace('('+subCalc+')', calculated);
     }
   
     // verify if the string still have parentheses and recursively resolves them
-    if (result.indexOf('(') >= 0) {
+    if (result.indexOf('(') >= 0 && result.indexOf(')') > result.indexOf('(')) {
       return this.calculateFull(result);
+    } else if (result.indexOf('(') >= 0 || result.indexOf(')') >= 0) {
+      return NaN;
     }
   
     console.log("String after subcalculations are done: " + result);

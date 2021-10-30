@@ -1,6 +1,6 @@
 let buttonStorage = {
     buttons: [
-        {value: 'clear', type: 'operation', color: 'bright'}, 
+        {value: 'C', type: 'operation', color: 'bright'}, 
         {value: '(', type: 'symbol', color: 'bright'},
         {value: ')', type: 'symbol', color: 'bright'},
         {value: '/', type: 'sign', color: 'bright'},

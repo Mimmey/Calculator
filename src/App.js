@@ -9,7 +9,6 @@ class App extends React.Component {
     super();
     this.state = {
       out: '',
-      focus: '0'
     }
 
     this.refOutput = React.createRef();
@@ -45,6 +44,10 @@ class App extends React.Component {
 
     for (let i = 0; i < classList.length; i++) {
       output.classList.add(classList[i]);
+    }
+
+    if (output.focus) {
+      output.blur();
     }
   }
 

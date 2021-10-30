@@ -2,11 +2,12 @@ import CalculationEngine from './CalculationEngine';
 
 class TapeEngine {
 
-    constructor(item, outputValue, outputClassName) {
+    constructor(item, outputValue, outputClassName, curFocus) {
         this.item = item;
         this.output = {
             value: outputValue,
-            classList: outputClassName.split(' ')
+            classList: outputClassName.split(' '),
+            focus: true
         }
     }
 
@@ -16,7 +17,7 @@ class TapeEngine {
         if (index > -1) {
             array.splice(index, 1);
         }
-
+        
         return array;
     }
 
@@ -54,7 +55,7 @@ class TapeEngine {
             this.output.classList = this.remove(this.output.classList, 'result');
         } else {
             newValue = curValue;
-            this.output.classList = this.remove(this.output.classListist, 'result');
+            this.output.classList = this.remove(this.output.classList, 'result');
             this.output.classList = this.remove(this.output.classList, 'blocked');
         }
     
@@ -86,17 +87,18 @@ class TapeEngine {
         let text = this.output.value;
         let newValue = this.output.value;
     
-        if (curValue === 'clear') {
+        if (curValue === 'C') {
             newValue = '';
             this.output.classList = this.remove(this.output.classList, 'result');
             this.output.classList = this.remove(this.output.classList, 'blocked');
         } else if (text !== 'ERROR' && curValue === '=') {
             let engine = new CalculationEngine(text);
-            let result = engine.calculateFull();
+            let result = engine.calculateFull(engine.expression);
     
             if (isNaN(parseFloat((result)))) {
                 newValue = 'ERROR';
                 this.output.classList.push('blocked');
+                this.output.focus = false;
             } else {
                 newValue = result;
                 this.output.classList.push('result');
