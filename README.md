@@ -71,7 +71,7 @@ This is an example of how to list things you need to use the software and how to
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-The calculator supports mathematical functions such as <i>"+", "-", "*", "/", "^"</i>. You can use calculator with buttons or directly enter data into the input.
+The calculator supports mathematical functions such as <i>"+", "-", "*", "/", "^"</i>. You can use calculator with buttons or directly enter data into the input. The answer is calculating with "=" button pressing or with "enter" key.
 
 <!-- CONTRIBUTING -->
 ## Contributing
