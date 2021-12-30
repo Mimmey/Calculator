@@ -1,8 +1,7 @@
 import CalculationEngine from './CalculationEngine';
 
 class TapeEngine {
-
-    constructor(item, outputValue, outputClassName, curFocus) {
+    setProps(item, outputValue, outputClassName) {
         this.item = item;
         this.output = {
             value: outputValue,
@@ -11,19 +10,35 @@ class TapeEngine {
         }
     }
 
+    handleOutput(output) {
+        output.value = this.output.value;
+        const classList = this.output.classList;
+        output.classList = [];
+
+        for (let i = 0; i < classList.length; i++) {
+            output.classList.add(classList[i]);
+        }
+
+        if (output.focus) {
+            output.blur();
+        }
+
+        return output;
+    }
+
     remove(array, item) {
         const index = array.indexOf(item);
 
         if (index > -1) {
             array.splice(index, 1);
         }
-        
+
         return array;
     }
 
     tape() {
         let type = this.item.type;
-    
+
         switch (type) {
             case 'operation':
                 this.tapeOperation(this.item.value);
@@ -35,15 +50,15 @@ class TapeEngine {
                 this.tapeSign(this.item.value);
                 break;
             default:
-                break;  
+                break;
         }
     }
-    
+
     tapeSign(value) {
         let curValue = value;
         let text = this.output.value;
         let newValue = this.output.value;
-    
+
         if (text !== 'ERROR' && !this.output.classList.includes('result')) {
             if (text === '0' && value === '-') {
                 newValue = curValue;
@@ -58,15 +73,15 @@ class TapeEngine {
             this.output.classList = this.remove(this.output.classList, 'result');
             this.output.classList = this.remove(this.output.classList, 'blocked');
         }
-    
+
         this.output.value = newValue;
     }
-    
+
     tapeSymbol(value) {
         let curValue = value;
         let text = this.output.value;
         let newValue = this.output.value;
-    
+
         if (text !== 'ERROR' && !this.output.classList.includes('result')) {
             if (value !== '.') {
                 newValue = (text === '0' ? '' : text) + curValue;
@@ -78,15 +93,15 @@ class TapeEngine {
             this.output.classList = this.remove(this.output.classList, 'result');
             this.output.classList = this.remove(this.output.classList, 'blocked');
         }
-    
+
         this.output.value = newValue;
-      }
-    
+    }
+
     tapeOperation(value) {
         let curValue = value;
         let text = this.output.value;
         let newValue = this.output.value;
-    
+
         if (curValue === 'C') {
             newValue = '';
             this.output.classList = this.remove(this.output.classList, 'result');
@@ -94,7 +109,7 @@ class TapeEngine {
         } else if (text !== 'ERROR' && curValue === '=') {
             let engine = new CalculationEngine(text);
             let result = engine.calculateFull(engine.expression);
-    
+
             if (isNaN(parseFloat((result)))) {
                 newValue = 'ERROR';
                 this.output.classList.push('blocked');
@@ -105,7 +120,7 @@ class TapeEngine {
             }
         } else if (curValue === 'T') {
             document.body.classList.toggle('dark');
-        } 
+        }
         this.output.value = newValue;
     }
 }

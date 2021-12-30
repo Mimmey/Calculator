@@ -2,6 +2,7 @@ import './App.css';
 import React from 'react';
 import buttonStorage from './buttonStorage';
 import TapeEngine from './businesslogic/TapeEngine';
+import classNames from 'classnames';
 
 class App extends React.Component {
 
@@ -9,12 +10,13 @@ class App extends React.Component {
     super();
     this.state = {
       out: '',
+      tapeEngine: new TapeEngine()
     }
 
     this.refOutput = React.createRef();
     this.refButtons = React.createRef();
   }
-  
+
   componentDidMount() {
     const buttons = Array.from(this.refButtons.current.querySelectorAll('button'));
     buttons.forEach(e => e.style.height = e.offsetWidth + 'px');
@@ -26,7 +28,7 @@ class App extends React.Component {
   }
 
   onKeyPress(event) {
-    let item = {value: '=', type: 'operation', color: 'default'};
+    const item = { value: '=', type: 'operation', color: 'default' };
 
     if (event.key === 'Enter') {
       this.onButtonClick(item);
@@ -35,34 +37,23 @@ class App extends React.Component {
 
   onButtonClick(item) {
     let output = this.refOutput.current;
-    let tapeEngine = new TapeEngine(item, output.value, output.className);
-    
-    tapeEngine.tape();
-    output.value = tapeEngine.output.value;
-    let classList = tapeEngine.output.classList;
-    output.classList = [];
-
-    for (let i = 0; i < classList.length; i++) {
-      output.classList.add(classList[i]);
-    }
-
-    if (output.focus) {
-      output.blur();
-    }
+    this.state.tapeEngine.setProps(item, output.value, output.className);
+    this.state.tapeEngine.tape();
+    output = this.state.tapeEngine.handleOutput(output);
   }
 
   render() {
     return (
       <div className="calculator">
         <div className="calculator-result">
-          <input ref={this.refOutput} onKeyPress={(e) => {this.onKeyPress(e)}} className="calculator-result-expression" 
-          defaultValue={this.state.out} id="input" placeholder='0'
+          <input ref={this.refOutput} onKeyPress={(e) => { this.onKeyPress(e) }} className="calculator-result-expression"
+            defaultValue={this.state.out} id="input" placeholder='0'
           ></input>
         </div>
 
         <div ref={this.refButtons} className="calculator-buttons">
           {buttonStorage.buttons.map((item) => <button
-          key={item.value} className={item.type + ' ' + item.color} onClick={() => {this.onButtonClick(item)}}
+            key={item.value} className={classNames(item.type, item.color)} onClick={() => { this.onButtonClick(item) }}
           >{item.value}</button>)}
         </div>
       </div>

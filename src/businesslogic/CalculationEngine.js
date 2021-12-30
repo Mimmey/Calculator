@@ -7,7 +7,7 @@ class CalculationEngine {
   reorganizeArray(array) {
     let reorganized = [];
     let k = -1;
-    
+
     while (++k < array.length) {
       if (array[k] !== false) {
         reorganized.push(array[k]);
@@ -27,7 +27,7 @@ class CalculationEngine {
     }
 
     if (sign % 2 !== 0) {
-      array[pointer] *= -1; 
+      array[pointer] *= -1;
     }
 
     return this.reorganizeArray(array);
@@ -42,7 +42,7 @@ class CalculationEngine {
 
     return this.reorganizeArray(array);
   }
-  
+
   doTheMath(op, array) {
     let t1 = op - 1;
     let t2 = op + 1;
@@ -69,28 +69,28 @@ class CalculationEngine {
       case '-':
         array[t2] = parseFloat(v1) - parseFloat(v2);
         break;
-      default: 
-        return NaN;  
+      default:
+        return NaN;
     }
 
     array[op] = false;
     array[t1] = false;
-  
+
     return this.reorganizeArray(array);
   }
-  
-  calculate(string){
+
+  calculate(string) {
 
     if (string.indexOf('(') >= 0 || string.indexOf(')') >= 0) {
       return NaN;
     }
-    
+
     // break the string into numbers and operators
     let cArray = (string.match(/([0-9]+\.[0-9]+)|([0-9]+)|\+|-|\^|\*|\//g));
     let i = -1;
 
     console.log(cArray);
-    
+
     if (!cArray) {
       return string;
     }
@@ -109,28 +109,24 @@ class CalculationEngine {
     while (i++ < cArray.length - 1) {
       if (cArray[i] === '^') {
         cArray = this.doTheMath(i, cArray);
-        i = i - 1;
+        i--;
       }
     }
-    
-    // multiplications
+
+    // multiplications/divisions
     i = -1;
     while (i++ < cArray.length - 1) {
       if (cArray[i] === '*') {
         cArray = this.doTheMath(i, cArray);
-        i = i - 1;
+        i--;
       }
-    }
-  
-    // divisions
-    i = -1;
-    while (i++ < cArray.length - 1) {
+
       if (cArray[i] === '/') {
         cArray = this.doTheMath(i, cArray);
         i--;
       }
     }
-      
+
     // sum/substract
     i = -1;
     while (i++ < cArray.length - 1) {
@@ -138,7 +134,7 @@ class CalculationEngine {
         cArray = this.doTheMath(i, cArray);
         i--;
       }
-  
+
       if (cArray[i] === '-') {
         cArray = this.doTheMath(i, cArray);
         i--;
@@ -146,11 +142,11 @@ class CalculationEngine {
     }
     return cArray[0];
   }
-  
+
   calculateFull(str) {
     // clean the string from spaces
-    str = str.replace(/ /g,'');
-  
+    str = str.replace(/ /g, '');
+
     // declare the final result variable
     let result = str;
 
@@ -162,26 +158,26 @@ class CalculationEngine {
     // brake the strings there are between parentheses
     let subCalculations = str.match(/\(([^()]+)\)/gmi);
     let subCalc;
-  
+
     if (!subCalculations) {
       return this.calculate(str);
     }
-  
+
     for (let k = 0; k < subCalculations.length; k++) {
-      
+
       subCalc = subCalculations[k].replace(/\(|\)/g, '');
       let calculated = this.calculate(subCalc);
       console.log('Replacing (' + subCalc + ') by ' + calculated);
-      result = result.replace('('+subCalc+')', calculated);
+      result = result.replace('(' + subCalc + ')', calculated);
     }
-  
+
     // verify if the string still have parentheses and recursively resolves them
     if (result.indexOf('(') >= 0 && result.indexOf(')') > result.indexOf('(')) {
       return this.calculateFull(result);
     } else if (result.indexOf('(') >= 0 || result.indexOf(')') >= 0) {
       return NaN;
     }
-  
+
     console.log("String after subcalculations are done: " + result);
     return this.calculate(result);
   }
