@@ -1,7 +1,7 @@
 # Getting Started with Create React App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
-The project is available at the link: mimmey.github.io/calculator/
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).\
+The project is available [here](mimmey.github.io/calculator/).
 
 ## Available Scripts
 
